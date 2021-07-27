@@ -160,9 +160,9 @@ hasWPAEncryption wifi =
 
 view : Model -> Html Msg
 view model =
-    div [ class "flex items-center justify-center min-h-screen bg-gray-50" ]
-        [ main_ [ class "px-8 py-10 bg-white rounded-md shadow" ]
-            [ h1 [ class "flex items-center justify-center gap-3 mb-8 text-4xl" ]
+    div [ class "flex items-center justify-center min-h-screen print:min-h-0 bg-gray-50 print:bg-transparent" ]
+        [ main_ [ class "px-8 py-10 bg-white rounded-md shadow print:shadow-none" ]
+            [ h1 [ class "flex items-center justify-center gap-3 mb-8 text-4xl print:hidden" ]
                 [ Heroicons.Solid.wifi [ Svg.Attributes.class "w-10 h-10" ]
                 , span [] [ text "Wi-Fi Sticker" ]
                 ]
@@ -170,12 +170,8 @@ view model =
                 [ viewForm model
                 , aside [ class "flex flex-col items-end justify-between flex-1" ]
                     [ viewQRCode model
-                    , div [ class "inline-flex gap-2 mt-10" ]
+                    , div [ class "inline-flex gap-2 mt-10 print:hidden" ]
                         [ button [ type_ "submit", class "inline-flex items-center justify-center gap-2 px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" ]
-                            [ Heroicons.Solid.download [ Svg.Attributes.class "w-5 h-5" ]
-                            , text "Download"
-                            ]
-                        , button [ type_ "submit", class "inline-flex items-center justify-center gap-2 px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" ]
                             [ Heroicons.Solid.printer [ Svg.Attributes.class "w-5 h-5" ]
                             , text "Print"
                             ]
@@ -188,7 +184,7 @@ view model =
 
 viewForm : Model -> Html Msg
 viewForm model =
-    Html.form [ class "w-80" ]
+    Html.form [ class "w-80 print:hidden" ]
         (viewBasicOptions model
             ++ (if model.advancedOptionsVisible then
                     viewAdvancedOptions model
@@ -333,17 +329,26 @@ parseEncryption encryption =
 
 viewQRCode : Model -> Html Msg
 viewQRCode model =
-    model.wifi
-        |> generateWifiString
-        |> QRCode.fromString
-        |> Result.map
-            (QRCode.toSvgWithoutQuietZone
-                [ Svg.Attributes.width "300px"
-                , Svg.Attributes.height "300px"
-                , Svg.Attributes.class "p-8 border rounded-md"
-                ]
-            )
-        |> Result.withDefault (Html.text "")
+    let
+        qrCode =
+            model.wifi
+                |> generateWifiString
+                |> QRCode.fromString
+                |> Result.map
+                    (QRCode.toSvgWithoutQuietZone
+                        [ Svg.Attributes.width "300px"
+                        , Svg.Attributes.height "300px"
+                        , Svg.Attributes.class "p-8 border rounded-md"
+                        ]
+                    )
+                |> Result.withDefault (Html.text "")
+    in
+    div [ class "print:grid gap-20 print:grid-cols-2 print:grid-rows-2" ]
+        [ div [ class "print:block" ] [ qrCode ]
+        , div [ class "hidden print:block" ] [ qrCode ]
+        , div [ class "hidden print:block" ] [ qrCode ]
+        , div [ class "hidden print:block" ] [ qrCode ]
+        ]
 
 
 generateWifiString : WiFi -> String
