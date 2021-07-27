@@ -268,7 +268,7 @@ viewAdvancedOptions : Model -> List (Html Msg)
 viewAdvancedOptions model =
     [ div [ class "mt-5" ]
         [ p [ class "text-sm text-gray-500" ]
-            [ text "You can probably leave these settings on their default values." ]
+            [ text "You can probably leave these settings at their default values." ]
         ]
     , div [ class "mt-5" ]
         [ div []
