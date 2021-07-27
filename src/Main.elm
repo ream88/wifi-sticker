@@ -167,20 +167,20 @@ hasWPAEncryption wifi =
 
 view : Model -> Html Msg
 view model =
-    div [ class "flex items-center justify-center min-h-screen print:min-h-0 bg-gray-50 print:bg-transparent" ]
+    div [ class "flex items-center justify-center min-h-screen py-8 print:min-h-0 bg-gray-50 print:bg-transparent" ]
         [ main_ [ class "px-8 py-10 bg-white rounded-md shadow print:shadow-none" ]
             [ h1 [ class "flex items-center justify-center gap-3 mb-8 text-4xl print:hidden" ]
                 [ Heroicons.Solid.wifi [ Svg.Attributes.class "w-10 h-10" ]
                 , span [] [ text "Wi-Fi Sticker" ]
                 ]
-            , div [ class "flex items-stretch gap-8" ]
+            , div [ class "flex flex-col items-stretch gap-8 md:flex-row" ]
                 [ viewForm model
-                , aside [ class "flex flex-col items-end justify-between flex-1" ]
+                , aside [ class "flex flex-col items-stretch justify-between flex-1" ]
                     [ viewQRCode model
                     , div [ class "inline-flex gap-2 mt-10 print:hidden" ]
                         [ button
                             [ type_ "button"
-                            , class "inline-flex items-center justify-center gap-2 px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            , class "inline-flex items-center justify-center w-full gap-2 px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm md:w-auto hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             , onClick Print
                             ]
                             [ Heroicons.Solid.printer [ Svg.Attributes.class "w-5 h-5" ]
@@ -195,7 +195,7 @@ view model =
 
 viewForm : Model -> Html Msg
 viewForm model =
-    Html.form [ class "w-80 print:hidden" ]
+    Html.form [ class "w-80 print:hidden", autocomplete False ]
         (viewBasicOptions model
             ++ (if model.advancedOptionsVisible then
                     viewAdvancedOptions model
@@ -358,7 +358,7 @@ viewQRCode model =
                 , Heroicons.Solid.wifi [ Svg.Attributes.class "w-6 h-6" ]
                 ]
     in
-    div [ class "print:grid gap-10 print:grid-cols-2 print:grid-rows-2" ]
+    div [ class "gap-10 print:grid print:grid-cols-2 print:grid-rows-2" ]
         [ qrCodeWrapper False
         , qrCodeWrapper True
         , qrCodeWrapper True
