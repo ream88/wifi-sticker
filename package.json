@@ -1,10 +1,16 @@
 {
   "private": true,
   "scripts": {
-    "start": "elm-live src/Main.elm"
+    "start": "npm run start:elm & npm run start:tailwindcss",
+    "start:elm": "elm-live src/Main.elm --start-page template.html -- --debug --output app.js",
+    "start:tailwindcss": "tailwindcss -o tailwind.css --watch"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.3.3",
+    "autoprefixer": "^10.3.1",
     "elm": "^0.19.1-5",
-    "elm-live": "^4.0.2"
+    "elm-live": "^4.0.2",
+    "postcss": "^8.3.6",
+    "tailwindcss": "^2.2.7"
   }
 }
