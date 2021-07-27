@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Browser
 import Heroicons.Solid
@@ -9,6 +9,9 @@ import Json.Decode as JD
 import QRCode
 import Svg exposing (svg)
 import Svg.Attributes
+
+
+port print : () -> Cmd msg
 
 
 type WiFiEncryption
@@ -68,6 +71,7 @@ type Msg
     | SetWiFiEncryption WiFiEncryption
     | TogglePassword
     | ToggleAdvancedOptions
+    | Print
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -106,6 +110,9 @@ update msg model =
 
         ToggleAdvancedOptions ->
             ( { model | advancedOptionsVisible = not model.advancedOptionsVisible }, Cmd.none )
+
+        Print ->
+            ( model, print () )
 
 
 setSSID : String -> WiFi -> WiFi
@@ -171,7 +178,11 @@ view model =
                 , aside [ class "flex flex-col items-end justify-between flex-1" ]
                     [ viewQRCode model
                     , div [ class "inline-flex gap-2 mt-10 print:hidden" ]
-                        [ button [ type_ "submit", class "inline-flex items-center justify-center gap-2 px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" ]
+                        [ button
+                            [ type_ "button"
+                            , class "inline-flex items-center justify-center gap-2 px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            , onClick Print
+                            ]
                             [ Heroicons.Solid.printer [ Svg.Attributes.class "w-5 h-5" ]
                             , text "Print"
                             ]
@@ -335,19 +346,23 @@ viewQRCode model =
                 |> generateWifiString
                 |> QRCode.fromString
                 |> Result.map
-                    (QRCode.toSvgWithoutQuietZone
-                        [ Svg.Attributes.width "300px"
-                        , Svg.Attributes.height "300px"
-                        , Svg.Attributes.class "p-8 border rounded-md"
-                        ]
-                    )
+                    (QRCode.toSvgWithoutQuietZone [ Svg.Attributes.class "w-64 h-64 print:w-48 print:h-48" ])
                 |> Result.withDefault (Html.text "")
+
+        qrCodeWrapper hidden =
+            div
+                [ class "flex flex-col items-center justify-center gap-8 p-8 border rounded-md print:rounded-none print:flex"
+                , classList [ ( "hidden", hidden ) ]
+                ]
+                [ qrCode
+                , Heroicons.Solid.wifi [ Svg.Attributes.class "w-6 h-6" ]
+                ]
     in
-    div [ class "print:grid gap-20 print:grid-cols-2 print:grid-rows-2" ]
-        [ div [ class "print:block" ] [ qrCode ]
-        , div [ class "hidden print:block" ] [ qrCode ]
-        , div [ class "hidden print:block" ] [ qrCode ]
-        , div [ class "hidden print:block" ] [ qrCode ]
+    div [ class "print:grid gap-10 print:grid-cols-2 print:grid-rows-2" ]
+        [ qrCodeWrapper False
+        , qrCodeWrapper True
+        , qrCodeWrapper True
+        , qrCodeWrapper True
         ]
 
 

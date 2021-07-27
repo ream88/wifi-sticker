@@ -12,7 +12,11 @@
 
 <body>
   <script>
-    Elm.Main.init()
+    const app = Elm.Main.init()
+
+    app.ports.print.subscribe(() => {
+      window.print()
+    })
   </script>
 </body>
 
