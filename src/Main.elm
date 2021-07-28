@@ -1,4 +1,4 @@
-port module Main exposing (main)
+port module Main exposing (Flags, Model, Msg, WiFi, WiFiEncryption, main)
 
 import Browser
 import Heroicons.Solid
@@ -7,7 +7,6 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as JD
 import QRCode
-import Svg exposing (svg)
 import Svg.Attributes
 
 

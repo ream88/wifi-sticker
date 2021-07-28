@@ -16,6 +16,7 @@
     "elm": "^0.19.1-5",
     "elm-live": "^4.0.2",
     "elm-optimize-level-2": "^0.1.5",
+    "elm-review": "^2.5.3",
     "postcss": "^8.3.6",
     "tailwindcss": "^2.2.7",
     "uglify-js": "^3.14.1"
