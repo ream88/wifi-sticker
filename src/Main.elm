@@ -1,10 +1,12 @@
 port module Main exposing (Flags, Model, Msg, WiFi, WiFiEncryption, main)
 
 import Browser
+import File.Download as Download
 import Heroicons.Solid
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Image
 import Json.Decode as JD
 import QRCode
 import Svg.Attributes
@@ -70,7 +72,8 @@ type Msg
     | SetWiFiEncryption WiFiEncryption
     | TogglePassword
     | ToggleAdvancedOptions
-    | Print
+    | PrintQRCode
+    | DownloadQRCode
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -110,8 +113,23 @@ update msg model =
         ToggleAdvancedOptions ->
             ( { model | advancedOptionsVisible = not model.advancedOptionsVisible }, Cmd.none )
 
-        Print ->
+        PrintQRCode ->
             ( model, print () )
+
+        DownloadQRCode ->
+            case generateQRCode model of
+                Ok qrCode ->
+                    let
+                        cmd =
+                            qrCode
+                                |> QRCode.toImage
+                                |> Image.toPng
+                                |> Download.bytes "wifi.png" "image/png"
+                    in
+                    ( model, cmd )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
 
 setSSID : String -> WiFi -> WiFi
@@ -180,7 +198,15 @@ view model =
                         [ button
                             [ type_ "button"
                             , class "inline-flex items-center justify-center w-full gap-2 px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm md:w-auto hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            , onClick Print
+                            , onClick DownloadQRCode
+                            ]
+                            [ Heroicons.Solid.download [ Svg.Attributes.class "w-5 h-5" ]
+                            , text "Download"
+                            ]
+                        , button
+                            [ type_ "button"
+                            , class "inline-flex items-center justify-center w-full gap-2 px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm md:w-auto hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            , onClick PrintQRCode
                             ]
                             [ Heroicons.Solid.printer [ Svg.Attributes.class "w-5 h-5" ]
                             , text "Print"
@@ -341,11 +367,9 @@ viewQRCode : Model -> Html Msg
 viewQRCode model =
     let
         qrCode =
-            model.wifi
-                |> generateWifiString
-                |> QRCode.fromString
-                |> Result.map
-                    (QRCode.toSvgWithoutQuietZone [ Svg.Attributes.class "w-64 h-64 print:w-48 print:h-48" ])
+            model
+                |> generateQRCode
+                |> Result.map (QRCode.toSvgWithoutQuietZone [ Svg.Attributes.class "w-64 h-64 print:w-48 print:h-48" ])
                 |> Result.withDefault (Html.text "")
 
         qrCodeWrapper hidden =
@@ -386,3 +410,10 @@ generateWifiString wifi =
               else
                 "H:false"
             ]
+
+
+generateQRCode : Model -> Result QRCode.Error QRCode.QRCode
+generateQRCode model =
+    model.wifi
+        |> generateWifiString
+        |> QRCode.fromString
