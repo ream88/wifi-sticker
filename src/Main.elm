@@ -176,7 +176,7 @@ view model =
                 [ viewForm model
                 , aside [ class "flex flex-col items-stretch justify-between flex-1" ]
                     [ viewQRCode model
-                    , div [ class "inline-flex gap-2 mt-10 print:hidden" ]
+                    , div [ class "inline-flex justify-end gap-2 mt-10 print:hidden" ]
                         [ button
                             [ type_ "button"
                             , class "inline-flex items-center justify-center w-full gap-2 px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm md:w-auto hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
