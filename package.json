@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "npm run build:elm; npm run build:html; npm run build:uglifyjs; npm run build:tailwindcss",
+    "build": "npm run build:assets; npm run build:elm; npm run build:html; npm run build:uglifyjs; npm run build:tailwindcss",
+    "build:assets": "mkdir -p build/assets; cp assets/* build/assets/",
     "build:elm": "elm-optimize-level-2 src/Main.elm --output=build/app.js",
     "build:html": "cp index.html build/",
     "build:tailwindcss": "tailwindcss -o build/tailwind.css --purge src/*.elm --minify",
