@@ -184,7 +184,7 @@ hasWPAEncryption wifi =
 
 view : Model -> Html Msg
 view model =
-    div [ class "flex items-center justify-center min-h-screen py-8 print:min-h-0 bg-gray-50 print:bg-transparent" ]
+    div [ class "flex flex-col items-center justify-center min-h-screen gap-2 py-8 print:min-h-0 bg-gray-50 print:bg-transparent" ]
         [ main_ [ class "px-8 py-10 bg-white rounded-md shadow print:shadow-none" ]
             [ h1 [ class "flex items-center justify-center gap-3 mb-8 text-4xl print:hidden" ]
                 [ Heroicons.Solid.wifi [ Svg.Attributes.class "w-10 h-10" ]
@@ -214,6 +214,12 @@ view model =
                         ]
                     ]
                 ]
+            ]
+        , footer [ class "text-xs text-gray-500" ]
+            [ text ((169 |> Char.fromCode |> String.fromChar) ++ " 2021 Mario Uher. ")
+            , text "This app is "
+            , a [ class "text-indigo-600", href "https://github.com/ream88/wifi-sticker", target "_blank" ] [ text "open source" ]
+            , text "."
             ]
         ]
 
