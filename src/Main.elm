@@ -218,6 +218,7 @@ view model =
         , footer [ class "text-xs text-gray-500" ]
             [ p [ class "print:hidden" ]
                 [ text ((169 |> Char.fromCode |> String.fromChar) ++ " 2021 Mario Uher.")
+                , text " "
                 , text "This app is "
                 , a [ class "text-indigo-600", href "https://github.com/ream88/wifi-sticker", target "_blank" ] [ text "open source" ]
                 , text "."
